@@ -5,6 +5,7 @@ include(cmake/get_cpm.cmake)
 
 # Generate compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 # Dependencies
 CPMAddPackage("gh:raysan5/raylib#5.0")

@@ -3,19 +3,28 @@
 #include "generation.h"
 
 int main() {
-    const Vector2 screen_size = {1024, 768};
+    struct IntVector2 { uint32_t x; uint32_t y; } screen_size = {1024, 768};
     InitWindow(screen_size.x, screen_size.y, "Assignment 1");
 
     SetTargetFPS(60);
 
+    float falloff = 3.0f;
+
     // Data
     heightmap_t map = {0};
-    Heightmap_Create(&map, 100, 100);
-    Heightmap_GeneratePerlin(&map);
-    Heightmap_ApplyEdgeMixing(&map);
+    Heightmap_Create(&map, 170, 130);
+    Heightmap_GeneratePerlin(&map, 1719);
+    Heightmap_ApplyEdgeMixing(&map, falloff);
+    Heightmap_ApplyNaiveErosion(&map);
 
     // Main game loop
     while (!WindowShouldClose()) {
+        if (IsKeyPressed(KEY_A)) {
+            Heightmap_GeneratePerlin(&map, GetTime());
+            Heightmap_ApplyEdgeMixing(&map, falloff);
+            Heightmap_ApplyNaiveErosion(&map);
+        }
+
         BeginDrawing();
         {
             ClearBackground(RAYWHITE);
