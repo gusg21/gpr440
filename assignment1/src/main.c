@@ -15,21 +15,24 @@ int main() {
     Heightmap_Create(&map, 170, 130);
     Heightmap_GeneratePerlin(&map, 1719);
     Heightmap_ApplyEdgeMixing(&map, falloff);
-    Heightmap_ApplyNaiveErosion(&map);
+    Heightmap_ApplySmarterErosion(&map);
 
     // Main game loop
     while (!WindowShouldClose()) {
         if (IsKeyPressed(KEY_A)) {
             Heightmap_GeneratePerlin(&map, GetTime());
             Heightmap_ApplyEdgeMixing(&map, falloff);
-            Heightmap_ApplyNaiveErosion(&map);
+            Heightmap_ApplySmarterErosion(&map);
         }
 
         BeginDrawing();
         {
             ClearBackground(RAYWHITE);
 
-            Heightmap_Draw(&map, 5);
+            if (IsKeyDown(KEY_S))
+                Heightmap_DrawGray(&map, 5);
+            else
+                Heightmap_Draw(&map, 5);
         }
         EndDrawing();
     }

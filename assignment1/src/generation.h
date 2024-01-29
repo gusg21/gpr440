@@ -12,4 +12,6 @@ void Heightmap_Set(heightmap_t* map, uint32_t x, uint32_t y, float value);
 void Heightmap_GeneratePerlin(heightmap_t* map, uint32_t seed);
 void Heightmap_ApplyEdgeMixing(heightmap_t* map, float falloff);
 void Heightmap_ApplyNaiveErosion(heightmap_t* map);
+void Heightmap_ApplySmarterErosion(heightmap_t* map);
+void Heightmap_DrawGray(heightmap_t* map, uint32_t tile_size);
 void Heightmap_Draw(heightmap_t* map, uint32_t tile_size);
