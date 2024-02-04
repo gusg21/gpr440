@@ -1,5 +1,6 @@
 #include <raylib.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 typedef struct heightmap {
     float* data;

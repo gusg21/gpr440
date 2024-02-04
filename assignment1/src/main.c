@@ -69,7 +69,8 @@ void ConstructSettingsEditor(struct nk_context* ctx, heightmap_t* heightmap,
 
             nk_labelf(ctx, NK_TEXT_ALIGN_RIGHT | NK_TEXT_ALIGN_MIDDLE,
                       "Seed: %d", settings->seed);
-            if (nk_button_symbol_text(ctx, NK_SYMBOL_TRIANGLE_RIGHT, "Randomize", 9, NK_TEXT_ALIGN_RIGHT)) {
+            if (nk_button_symbol_text(ctx, NK_SYMBOL_TRIANGLE_RIGHT,
+                                      "Randomize", 9, NK_TEXT_ALIGN_RIGHT)) {
                 settings->seed = rand();
             }
         }
@@ -158,9 +159,9 @@ int main() {
             // Determine where to draw the map
             const int tile_size = 5;
             float map_x =
-                GetRenderWidth() / 2.f - (map.width * tile_size) / 2.f;
+                GetScreenWidth() / 2.f - (map.width * tile_size) / 2.f;
             float map_y =
-                GetRenderHeight() / 2.f - (map.height * tile_size) / 2.f;
+                GetScreenHeight() / 2.f - (map.height * tile_size) / 2.f;
             if (IsKeyDown(KEY_S)) {
                 Heightmap_DrawGray(&map, map_x, map_y, tile_size);
             } else {
@@ -169,7 +170,15 @@ int main() {
 
             // Info
             DrawText("Hold [S] to view the raw heightmap", 10, 10, 10, BLACK);
-            DrawText("World generation demo with turbulent noise and erosion by Angus Goucher, 2024", 10, 23, 10, GRAY);
+            DrawText(
+                "World generation demo with turbulent noise and erosion by "
+                "Angus Goucher, 2024",
+                10, 23, 10, GRAY);
+            DrawText(TextFormat("render %dx%d, screen %dx%d, dpi %.2f, %.2f",
+                                GetRenderWidth(), GetRenderHeight(),
+                                GetScreenWidth(), GetScreenHeight(),
+                                GetWindowScaleDPI().x, GetWindowScaleDPI().y),
+                     10, 36, 10, GRAY);
 
             // Draw the Gui
             DrawNuklear(ctx);
