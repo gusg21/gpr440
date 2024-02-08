@@ -10,14 +10,24 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Dependencies
 CPMAddPackage("gh:raysan5/raylib#5.0")
 
+# Static library of utilities
+add_library(gg_lib STATIC
+
+    src/gg/grid.c
+    src/gg/astar.c
+    src/gg/camera.c
+
+    )
+target_link_libraries(gg_lib raylib)
+
 # Our Project
 add_executable(${PROJECT_NAME} 
 
     src/main.c 
-    src/grid.c
-    src/astar.c
     
     )
+
+target_link_libraries(${PROJECT_NAME} gg_lib)
 
 # Assets
 add_custom_target(copy_assets

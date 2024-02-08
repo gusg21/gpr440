@@ -2,9 +2,11 @@
 #include <stdint.h>
 
 #define RAYLIB_NUKLEAR_IMPLEMENTATION
-#include "grid.h"
 #include "raylib-nuklear.h"
 #include "styling.h"
+
+#include "gg/camera.h"
+#include "gg/grid.h"
 
 void ConstructSettingsEditor(struct nk_context* ctx) {
     if (nk_begin(
@@ -15,10 +17,11 @@ void ConstructSettingsEditor(struct nk_context* ctx) {
     nk_end(ctx);
 }
 
-void DrawGrid(grid_t* grid, uint32_t tile_size) {
+void DrawGrid(gg_grid_t* grid, uint32_t tile_size) {
     for (uint32_t x = 0; x < grid->width; x++) {
         for (uint32_t y = 0; y < grid->height; y++) {
-            DrawRectangleLines(x * tile_size, y * tile_size, tile_size, tile_size, GRAY);
+            DrawRectangleLines(x * tile_size, y * tile_size, tile_size,
+                               tile_size, GRAY);
         }
     }
 }
@@ -30,10 +33,13 @@ int main() {
     uint32_t screen_width = 1024;
     uint32_t screen_height = 768;
 
-    InitWindow(screen_width, screen_height, "Assignment 1");
+    InitWindow(screen_width, screen_height, "Assignment 2");
     SetWindowState(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
-    MaximizeWindow();
+    // MaximizeWindow();
     SetTargetFPS(60);
+
+    gg_camera_t cam;
+    Camera_Create(&cam, screen_width, screen_height);
 
     // Setup GUI
     Font font = LoadFont("assets/roboto.ttf");
@@ -43,21 +49,30 @@ int main() {
     ApplyStyle(ctx);
 
     // Data
-    grid_t grid = {0};
+    gg_grid_t grid = {0};
     Grid_Create(&grid, 30, 30);
 
     while (!WindowShouldClose()) {
         UpdateNuklear(ctx);
+        Camera_Update(&cam, GetFrameTime());
 
         // Show the user settings for manipulating the map gen
         ConstructSettingsEditor(ctx);
 
-        BeginDrawing();
+        // WORLD SPACE RENDERING
+        BeginMode2D(Camera_GetCamera2D(&cam));
         {
             ClearBackground(RAYWHITE);
 
             DrawGrid(&grid, 24);
 
+            Camera_DrawDebug(&cam);
+        }
+        EndMode2D();
+
+        // SCREEN SPACE RENDERING
+        BeginDrawing();
+        {
             // Info
             DrawTextEx(font,
                        TextFormat("render %dx%d, screen %dx%d, dpi %.2f, %.2f",
@@ -68,7 +83,7 @@ int main() {
             DrawTextEx(font, TextFormat("FPS: %d", GetFPS()),
                        (Vector2){10, font_size * 2.f}, font_size, 0,
                        GetFPS() >= 50 ? GREEN : RED);
-
+            
             // Draw the Gui
             DrawNuklear(ctx);
         }
